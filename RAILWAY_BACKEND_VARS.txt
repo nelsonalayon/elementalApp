@@ -1,0 +1,18 @@
+# 🔐 VARIABLES DE ENTORNO PARA RAILWAY - BACKEND
+# Copia y pega estas variables en Railway Dashboard -> Backend Service -> Variables
+
+NODE_ENV=production
+DATABASE_CLIENT=postgres
+HOST=0.0.0.0
+PORT=$PORT
+
+# 🔑 Claves de seguridad generadas - ÚSALAS TAL COMO ESTÁN:
+APP_KEYS=RgZgWQlmTHEK5YXGkwFzfKX0S2gZr0LcS1Nil1FnsYo=,v/DSc2Kd8hrQMglq2vlemj1GreBQPEqXaJukVfLkuZA=,f+tEQ7l1NQTn+oseMe2ZMyWAd/VC3eaO0LSxuvl8lH8=,qh2Yi9OKSshB+oIVQDojrLt5x/o4WFSNBme1ccd+9AA=
+JWT_SECRET=CTe+Om0DG/GvqCVfdhgxAD2wp1q1wzdkz4rPiuK9YfY=
+API_TOKEN_SALT=w5A48j8EqTEK3lBMXIA7lQrhGyBS1g3t8fflHtYWTYg=
+ADMIN_JWT_SECRET=gubxt8ZeohZNgc+slZ4nxF/wgdaKdDe4ascRldom8U0=
+TRANSFER_TOKEN_SALT=HQZ8cB8L8Lr3siiOksYFNUF9mt9suzbj55R+DaMBhh8=
+ENCRYPTION_KEY=N5WJ2J9R1d7H6JlxQ954XXngZitp73jBajitVQsGrcI=
+
+# 📝 NOTA: Railway proporciona DATABASE_URL automáticamente cuando agregues PostgreSQL
+# 📝 NOTA: PORT se configura automáticamente como $PORT (Railway lo maneja)
