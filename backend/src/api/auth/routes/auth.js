@@ -1,0 +1,13 @@
+module.exports = {
+    routes: [
+        {
+            method: 'POST',
+            path: '/auth/change-password',
+            handler: 'auth.changePassword',
+            config: {
+                policies: [],
+                middlewares: [],
+            },
+        },
+    ],
+};
