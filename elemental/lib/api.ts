@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 
 // Crear instancia de axios
 const api = axios.create({
-  baseURL: 'http://localhost:1337/api',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337/api',
   timeout: 10000,
 });
 
