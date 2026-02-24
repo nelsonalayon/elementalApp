@@ -1,9 +1,24 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
+// Función para obtener la URL base según el entorno
+const getBaseURL = (): string => {
+  // En el cliente, usar la variable de entorno del build
+  if (typeof window !== 'undefined') {
+    // Si estamos en producción (dominio no es localhost), usar URL de producción
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      // Detectar automáticamente o usar variable de entorno
+      return process.env.NEXT_PUBLIC_API_URL || 'https://elementalapp-production.up.railway.app/api';
+    }
+  }
+  
+  // En desarrollo o servidor, usar variable de entorno o localhost
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337/api';
+};
+
 // Crear instancia de axios
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337/api',
+  baseURL: getBaseURL(),
   timeout: 10000,
 });
 
