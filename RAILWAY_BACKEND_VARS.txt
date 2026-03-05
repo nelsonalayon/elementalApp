@@ -7,6 +7,9 @@ HOST=0.0.0.0
 PORT=$PORT
 FRONTEND_URL=https://tu-frontend.up.railway.app
 CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,https://tu-frontend.up.railway.app
+DATABASE_POOL_MIN=0
+DATABASE_POOL_MAX=2
+DATABASE_POOL_ACQUIRE_TIMEOUT=60000
 
 # 🔑 Claves de seguridad generadas - ÚSALAS TAL COMO ESTÁN:
 APP_KEYS=RgZgWQlmTHEK5YXGkwFzfKX0S2gZr0LcS1Nil1FnsYo=,v/DSc2Kd8hrQMglq2vlemj1GreBQPEqXaJukVfLkuZA=,f+tEQ7l1NQTn+oseMe2ZMyWAd/VC3eaO0LSxuvl8lH8=,qh2Yi9OKSshB+oIVQDojrLt5x/o4WFSNBme1ccd+9AA=
