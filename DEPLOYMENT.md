@@ -29,7 +29,7 @@ TRANSFER_TOKEN_SALT=your-transfer-salt
 
 ### Frontend (.env.local):
 ```
-NEXT_PUBLIC_API_URL=https://your-backend-url.railway.app
+NEXT_PUBLIC_API_URL=https://your-backend-url.railway.app/api
 ```
 
 ## Deployment Steps

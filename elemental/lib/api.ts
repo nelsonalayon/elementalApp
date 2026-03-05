@@ -3,27 +3,23 @@ import Cookies from 'js-cookie';
 
 const DEFAULT_PROD_API_URL = 'https://elementalapp-production.up.railway.app/api';
 
+const normalizeApiBaseURL = (url: string): string => {
+  const trimmed = url.trim().replace(/\/+$/, '');
+  if (!trimmed) return '';
+  return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
+};
+
 // Función para obtener la URL base según el entorno
 const getBaseURL = (): string => {
   const envBaseURL = process.env.NEXT_PUBLIC_API_URL;
   const isProduction = process.env.NODE_ENV === 'production';
 
   if (envBaseURL) {
-    return envBaseURL;
-  }
-
-  // En el cliente, usar la variable de entorno del build
-  if (typeof window !== 'undefined') {
-    // Si estamos en producción (dominio no es localhost), usar URL de producción
-    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-      return DEFAULT_PROD_API_URL;
-    }
-
-    return 'http://localhost:1337/api';
+    return normalizeApiBaseURL(envBaseURL);
   }
 
   if (isProduction) {
-    return DEFAULT_PROD_API_URL;
+    return normalizeApiBaseURL(DEFAULT_PROD_API_URL);
   }
 
   // En desarrollo (SSR), usar localhost
