@@ -1,5 +1,3 @@
-import { config } from "process";
-
 export default ({ env }) => ({
   auth: {
     secret: env('ADMIN_JWT_SECRET'),
@@ -19,10 +17,14 @@ export default ({ env }) => ({
     nps: env.bool('FLAG_NPS', true),
     promoteEE: env.bool('FLAG_PROMOTE_EE', true),
   },
+  tutorials: false,
+  notifications: {
+    releases: false,
+  },
   preview: {
-    enable:true,
+    enable: true,
     config: {
-     allowedOrigins: env("CLIENT_URL") ? [env("CLIENT_URL")] : [  'http://localhost:3000' ],  
+      allowedOrigins: env('CLIENT_URL') ? [env('CLIENT_URL')] : ['http://localhost:3000'],
     },
   },
 });
