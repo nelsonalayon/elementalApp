@@ -3,6 +3,8 @@ import path from 'path';
 export default ({ env }) => {
   const client = env('DATABASE_CLIENT', 'sqlite');
   const databaseUrl = env('DATABASE_URL');
+  const isProduction = env('NODE_ENV') === 'production';
+  const defaultPoolMax = isProduction ? 2 : 5;
 
   const postgresConnection = databaseUrl
     ? {
@@ -44,14 +46,26 @@ export default ({ env }) => {
           rejectUnauthorized: env.bool('DATABASE_SSL_REJECT_UNAUTHORIZED', true),
         },
       },
-      pool: { min: env.int('DATABASE_POOL_MIN', 0), max: env.int('DATABASE_POOL_MAX', 5) },
+      pool: {
+        min: env.int('DATABASE_POOL_MIN', 0),
+        max: env.int('DATABASE_POOL_MAX', defaultPoolMax),
+        acquireTimeoutMillis: env.int('DATABASE_POOL_ACQUIRE_TIMEOUT', 60000),
+        createTimeoutMillis: env.int('DATABASE_POOL_CREATE_TIMEOUT', 30000),
+        idleTimeoutMillis: env.int('DATABASE_POOL_IDLE_TIMEOUT', 30000),
+      },
     },
     postgres: {
       connection: {
         ...postgresConnection,
         schema: env('DATABASE_SCHEMA', 'public'),
       },
-      pool: { min: env.int('DATABASE_POOL_MIN', 0), max: env.int('DATABASE_POOL_MAX', 5) },
+      pool: {
+        min: env.int('DATABASE_POOL_MIN', 0),
+        max: env.int('DATABASE_POOL_MAX', defaultPoolMax),
+        acquireTimeoutMillis: env.int('DATABASE_POOL_ACQUIRE_TIMEOUT', 60000),
+        createTimeoutMillis: env.int('DATABASE_POOL_CREATE_TIMEOUT', 30000),
+        idleTimeoutMillis: env.int('DATABASE_POOL_IDLE_TIMEOUT', 30000),
+      },
     },
     sqlite: {
       connection: {

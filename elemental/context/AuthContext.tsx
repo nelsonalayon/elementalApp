@@ -36,6 +36,11 @@ interface AuthContextType {
   changePassword: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; message?: string }>;
 }
 
+interface FetchUserResult {
+  user: User | null;
+  shouldLogout: boolean;
+}
+
 const AuthContext = createContext<AuthContextType | null>(null);
 
 function getApiErrorMessage(error: unknown, fallback: string): string {
@@ -52,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  const isAuthenticated = !!user && !!token;
+  const isAuthenticated = !!token;
 
   const isTokenValid = useCallback((currentToken: string): boolean => {
     try {
@@ -64,7 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const fetchUserInfo = useCallback(async (authToken: string): Promise<User | null> => {
+  const fetchUserInfo = useCallback(async (authToken: string): Promise<FetchUserResult> => {
     try {
       const response = await api.get('/users/me?populate=role', {
         headers: {
@@ -72,10 +77,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
       });
 
-      return response.data as User;
+      return {
+        user: response.data as User,
+        shouldLogout: false,
+      };
     } catch (error) {
       console.error('Error fetching user info:', error);
-      return null;
+
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
+        if (status === 401 || status === 403) {
+          return {
+            user: null,
+            shouldLogout: true,
+          };
+        }
+      }
+
+      return {
+        user: null,
+        shouldLogout: false,
+      };
     }
   }, []);
 
@@ -180,14 +202,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const savedToken = Cookies.get('auth-token');
 
     if (savedToken && isTokenValid(savedToken)) {
-      const userData = await fetchUserInfo(savedToken);
-      if (userData) {
+      const result = await fetchUserInfo(savedToken);
+      if (result.user) {
         setToken(savedToken);
-        setUser(userData);
-      } else {
+        setUser(result.user);
+      } else if (result.shouldLogout) {
         Cookies.remove('auth-token');
         setToken(null);
         setUser(null);
+      } else {
+        setToken(savedToken);
       }
     } else {
       Cookies.remove('auth-token');
