@@ -1,15 +1,33 @@
 export default ({ env }) => {
   const normalizeOrigin = (origin: string) => origin.trim().replace(/\/+$/, '');
   const extractRequestOrigin = (originOrContext: unknown): string | null => {
-    if (typeof originOrContext === 'string') return originOrContext;
+    if (typeof originOrContext === 'string') {
+      return originOrContext;
+    }
 
     if (originOrContext && typeof originOrContext === 'object') {
       const context = originOrContext as {
-        request?: { header?: { origin?: string } };
+        request?: {
+          header?: { origin?: string };
+          headers?: { origin?: string };
+        };
         headers?: { origin?: string };
+        req?: { headers?: { origin?: string } };
+        get?: (name: string) => string | undefined;
       };
 
-      const contextOrigin = context.request?.header?.origin ?? context.headers?.origin;
+      let originFromGetter: string | undefined;
+      if (typeof context.get === 'function') {
+        originFromGetter = context.get('origin');
+      }
+
+      const contextOrigin =
+        context.request?.header?.origin ??
+        context.request?.headers?.origin ??
+        context.headers?.origin ??
+        context.req?.headers?.origin ??
+        originFromGetter;
+
       if (typeof contextOrigin === 'string') return contextOrigin;
     }
 
@@ -43,16 +61,20 @@ export default ({ env }) => {
       name: 'strapi::cors',
       config: {
         origin: (originOrContext) => {
-          const requestOrigin = extractRequestOrigin(originOrContext);
-          if (!requestOrigin) return false;
+          try {
+            const requestOrigin = extractRequestOrigin(originOrContext);
+            if (!requestOrigin) return false;
 
-          const normalizedRequestOrigin = normalizeOrigin(requestOrigin);
+            const normalizedRequestOrigin = normalizeOrigin(requestOrigin);
 
-          if (exactOrigins.has(normalizedRequestOrigin)) return normalizedRequestOrigin;
-          if (localhostRegex.test(normalizedRequestOrigin)) return normalizedRequestOrigin;
-          if (railwayRegex.test(normalizedRequestOrigin)) return normalizedRequestOrigin;
+            if (exactOrigins.has(normalizedRequestOrigin)) return normalizedRequestOrigin;
+            if (localhostRegex.test(normalizedRequestOrigin)) return normalizedRequestOrigin;
+            if (railwayRegex.test(normalizedRequestOrigin)) return normalizedRequestOrigin;
 
-          return false;
+            return false;
+          } catch {
+            return false;
+          }
         },
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
