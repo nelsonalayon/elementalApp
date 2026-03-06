@@ -5,6 +5,7 @@ NODE_ENV=production
 DATABASE_CLIENT=postgres
 HOST=0.0.0.0
 PORT=$PORT
+PUBLIC_URL=https://tu-backend.up.railway.app
 FRONTEND_URL=https://tu-frontend.up.railway.app
 CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,https://tu-frontend.up.railway.app
 DATABASE_POOL_MIN=0
